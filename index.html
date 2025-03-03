@@ -10,36 +10,39 @@
 	
 		<a-assets>
 			<img id="grass" src="grass.jpg">
+			<img id="wood" src="wood.jpg">
+			<img id= "tiles" src="tiles.jpg">
+			<img id= "wall" src = "wall.jpg">
 		</a-assets>
 	
 		
-		<a-box position="0 0 -7" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="7 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="5.5 0 0" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="21 4 0.5" rotation ="0 90 0"> </a-box>
-		<a-box position="-5.5 0 -7.5" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="10 4 0.5" rotation ="0 90 0"> </a-box>
-		<a-box position="-7.2 4.7 -0.125" color = "#f1e2d2" width = "1" depth=".5" height="1.5" scale ="4 2.1 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-7.7 1.2 0.8" color = "#e4f5ff" width = "1" depth=".5" scale ="3 3.4 0.5" rotation ="0 -45 0"> </a-box>
-		<a-box position="-9.2 0 -0.126" color = "#f1e2d2" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-9.2 0 4" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-2 6 4" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="17 1 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="5.5 0 4" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 1.3" rotation ="0 0 0"> </a-box>
-		<a-box position="-9.5 0 4" color = "#f1e2d3" width = "1.5" depth="1.5" height="3" scale ="16 4 0.5" rotation ="0 90 0"> </a-box>
-<a-box position="-9.5 1 13" color = "#e4f5ff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 10" rotation ="0 0 0"> </a-box>
-<a-box position="-9.5 1 16" color = "#e4f5ff" width = "1.5" depth="3" height="0.1" scale ="3 2 10" rotation ="0 90 0"> </a-box>
-<a-box position="5.5 1 8" color = "#e4f5ff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 16" rotation ="0 0 0"> </a-box>
-		<a-box position="0 0 16" color = "#f1f0ee" width = "1.5" depth="1.5" height="3" scale ="15 4 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="0 0 -7" src="#wall" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="7 4 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="5.5 0 0" material="src: wall.jpg; repeat: 5 2;" repeat 2 2" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="21 4 0.5" rotation ="0 90 0"> </a-box>
+		<a-box position="-5.5 0 -7.5" material="src: wall.jpg; repeat: 3 2;" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="10 4 0.5" rotation ="0 90 0"> </a-box>
+		<a-box position="-7.2 4.7 -0.125"material="src: wall.jpg; repeat: 2 2;" color = "#f1e2d2" width = "1" depth=".5" height="1.5" scale ="4 2.1 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="-7.7 1.2 0.8" color = "#f3fbff" width = "1" depth=".5" scale ="3 3.7 0.5" rotation ="0 -45 0"> </a-box>
+		<a-box position="-9.2 0 -0.126" material="src: wall.jpg; repeat: 1 5;" color = "#f1e2d2" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="-9.2 0 4" material="src: wall.jpg; repeat: 1 5;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="-2 6 4" material="src: wall.jpg; repeat: 5 1;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="17 1 0.5" rotation ="0 0 0"> </a-box>
+		<a-box position="5.5 0 4" material="src: wall.jpg; repeat: 1 5;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 1.3" rotation ="0 0 0"> </a-box>
+		<a-box position="-9.5 0 4" material="src: wall.jpg; repeat: 5 2;" color = "#f1e2d3" width = "1.5" depth="1.5" height="3" scale ="16 4 0.5" rotation ="0 90 0"> </a-box>
+<a-box position="-9.5 1 13"  color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 10" rotation ="0 0 0"> </a-box>
+<a-box position="-9.5 1 16" color = "#f3fbff" width = "1.5" depth="3" height="0.1" scale ="3 2 10" rotation ="0 90 0"> </a-box>
+<a-box position="5.5 1 8" color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 16" rotation ="0 0 0"> </a-box>
+		<a-box position="0 0 16" material="src: wall.jpg; repeat: 5 2;" color = "#f1f0ee" width = "1.5" depth="1.5" height="3" scale ="15 4 0.5" rotation ="0 0 0"> </a-box>
 		
-		<a-box position="-2 1 7" color = "#e4f5ff" width = "1.5" depth="1.5" height="0.1" scale ="1.5 2 4.3" rotation ="0 0 0"> </a-box>
+		<a-box position="-2 1 7" src = "#wood" color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="1.5 2 4.3" rotation ="0 0 0">	</a-box>
 		
-		<a-box position="-3.055 0.5 3.845" color = "#e4f5ff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
-		<a-box position="-0.946 0.5 3.845" color = "#e4f5ff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
+		<a-box position="-3.055 0.5 3.845" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
+		<a-box position="-0.946 0.5 3.845" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
 		
-		<a-box position="-3.055 0.5 10.155" color = "#e4f5ff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
-		<a-box position="-0.946 0.5 10.155" color = "#e4f5ff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
+		<a-box position="-3.055 0.5 10.155" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
+		<a-box position="-0.946 0.5 10.155" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
 		
-		<a-box   position = "0 6.5 0" scale = "22 1 32" rotation="0 0 0"> </a-box>
+		<a-box   position = "0 6.5 0" material="src: wall.jpg; repeat: 3 3;" scale = "22 1 32" rotation="0 0 0"> </a-box>
 		<a-sky color = "lightblue" > </a-sky>
 		
-		<a-plane color = "#faf5ef"  height="50" width="50" rotation="-90 0 0"></a-plane>
+		<a-plane material = "src: tiles.jpg; repeat: 13 13;" color = "#858585"  height="50" width="50" rotation="-90 0 0"></a-plane>
 		
 		<!--a-box position="6 4 -2" color = "blue" scale ="10 3 0.5"> <a-sphere color = "blue" radius = "1" position ="0 3 0">  </a-sphere> </a-box>
 		
