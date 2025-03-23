@@ -1,0 +1,95 @@
+<!DOCTYPE>
+
+<html>
+	<head>
+		<script src= "aframe.min.js"> </script>
+	</head>
+	
+	<script>
+		AFRAME.registerComponent('test-component-1', 
+			{
+			init: function () {
+				console.log("test-component is added");
+				console.log("object ID: " + this.el.id);
+							  }
+			}
+		);
+				
+				
+		AFRAME.registerComponent('play-sound', 
+			{ dependencies: ['raycaster'],
+				
+			init: function() {
+			console.log("test-1");
+				this.el.addEventListener('raycaster-intersected', function(evt)
+				
+				{
+				
+				console.log("test-2");
+				if (this.children[0].nodeName == "A-SOUND" )
+					{
+							this.children[0].components.sound.playSound();
+							console.log("test-3");
+					}
+				}
+				)
+							}
+			}
+		)
+		
+		AFRAME.registerComponent('change-color', {
+    dependencies: ['raycaster'],
+
+    init: function () {
+        this.el.addEventListener('raycaster-intersected', () => {
+            this.el.setAttribute('material', 'color', this.getRandomColor());
+        });
+    },
+
+    getRandomColor: function () {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16); // Generates a random hex color
+    }
+})
+
+
+
+	</script>
+	
+	<body>
+	<a-scene>
+	
+	<a-assets>
+	<audio id = "tick" src = "assets2/tick.mp3"> </audio>
+	<audio id = "tock" src = "assets2/tock.mp3"> </audio>
+	
+	</a-assets>
+	
+		<a-entity id = "box" position ="0 0 -5" geometry="box" 
+		animation = "property: rotation; to: 360 360 20; loop: true; easing: linear; dur:2000; ">
+		
+			<a-entity rotation =" 0 90 0" raycaster = "objects: .collidable; showLine:true; lineColor:red" id = "ray1" position ="0 0 0"> </a-entity>
+		
+			<a-entity rotation =" 0 180 0" raycaster = "objects: .collidable; showLine:true; lineColor:red" id = "ray2" position ="0 0 0"> </a-entity>
+			
+			<a-entity rotation =" 0 270 0" raycaster = "objects: .collidable; showLine:true; lineColor:red" id = "ray3" position ="0 0 0"> </a-entity>
+		
+			<a-entity rotation =" 0 0 0" raycaster = "objects: .collidable; showLine:true; lineColor:red" id = "ray4" position ="0 0 0"> </a-entity>										 
+		</a-entity>
+		
+		<a-light type="ambient" color="#ffffff" intensity="1"></a-light>
+		
+		
+		<a-entity activate-light play-sound change-color geometry = "primitive: box" class="collidable" scale = "5 5 5" position = "5 0 2">
+			<a-sound src = "#tock" sound> </a-sound> 
+		</a-entity>
+		
+		<a-entity play-sound change-color geometry = "primitive: box" class="collidable" scale = "5 5 5" position = "-10 0 -10"> 
+			<a-sound src = "#tock" sound> </a-sound>
+		</a-entity>
+	
+	
+	</a-scene>
+	
+	</body>
+
+</html>
