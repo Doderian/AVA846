@@ -40,7 +40,7 @@
   <a-scene  xr-mode-ui="enabled:true;XRMode:xr">
 
     <a-entity id="player" camera look-controls wasd-controls position="0 1.8 2">
-      <a-entity cursor="fuse: false"
+      <a-entity cursor="fuse: true; fuseTimeOut: 1500"
                 position="0 0 -1"
                 geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
                 material="color: red; shader: flat">
