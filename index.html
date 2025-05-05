@@ -5,37 +5,6 @@
 </head>
 
 <script>
-	AFRAME.registerComponent('hover-scale', {
-		init: function () {
-			const el = this.el;
-			const text = el.querySelector('a-text');
-
-			el.addEventListener('mouseenter', () => {
-				el.removeAttribute('animation__scale'); 
-				el.setAttribute('animation__scale', {
-					property: 'scale',
-					to: '2 2 2',
-					dur: 300,
-					easing: 'easeOutCubic'
-				  });
-				text.setAttribute('visible',true);
-			}
-			);
-
-			el.addEventListener('mouseleave', () => {
-			  el.removeAttribute('animation__scale'); 
-			  el.setAttribute('animation__scale', {
-				property: 'scale',
-				to: '1 1 1',
-				dur: 200,
-				easing: 'easeOutCubic'
-			  });
-			  text.setAttribute('visible',false);
-			}
-			);
-		  }
-		});
-		
 		
 		AFRAME.registerComponent('random-color', {
 		  dependencies: ['material'],
@@ -109,8 +78,6 @@
 		
 
 
-
-
 </script>
 
 <body>
@@ -128,18 +95,7 @@
 
 <a-sky color = "lightblue"  theta-length="90" radius="30"> </a-sky>
 	
-	
-	<!--
-	
-    <a-entity random-color position="1 2 -3" geometry="primitive: box" visible="false" hover-scale>
-      <a-text value="Blue Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
-    </a-entity>
 
-    <a-box random-color color="red" position="-1 2 -3" visible="false" hover-scale>
-      <a-text value="Red Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
-    </a-box>
-	
-	-->
 	
 	<a-entity box-spawner  ></a-entity>
 	
