@@ -1,119 +1,148 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<title> AVA846 - Lab 01 </title>
-	<script src= "aframe.min.js"></script>
+  <script src="aframe.min.js"></script>
 </head>
 
-	<body>
-	
-	<a-scene fog=" density: 5; near: 0.001 type: linear; color: lightblue">
-	
-		<a-assets>
-			<img id= "grass" src="./assets/grass.jpg">
-			<img id= "wood" src="./assets/wood.jpg">
-			<img id= "hardwood" src="./assets/hardwood.jpg">
-			<img id= "tiles" src="./assets/tiles.jpg">
-			<img id= "wall" src = "./assets/wall.jpg">
-			<img id= "cement" src = "./assets/cement.jpg">
-			<img id= "plastic" src = "./assets/plastic.jpg">
-		</a-assets>
-	
+<script>
+	AFRAME.registerComponent('hover-scale', {
+		init: function () {
+			const el = this.el;
+			const text = el.querySelector('a-text');
+
+			el.addEventListener('mouseenter', () => {
+				el.removeAttribute('animation__scale'); 
+				el.setAttribute('animation__scale', {
+					property: 'scale',
+					to: '2 2 2',
+					dur: 300,
+					easing: 'easeOutCubic'
+				  });
+				text.setAttribute('visible',true);
+			}
+			);
+
+			el.addEventListener('mouseleave', () => {
+			  el.removeAttribute('animation__scale'); 
+			  el.setAttribute('animation__scale', {
+				property: 'scale',
+				to: '1 1 1',
+				dur: 200,
+				easing: 'easeOutCubic'
+			  });
+			  text.setAttribute('visible',false);
+			}
+			);
+		  }
+		});
 		
-		<a-box id = "wallMe" position="0 0 -7" src="#wall" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="7 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="5.5 0 0" material="src: #wall; repeat: 5 2;" repeat 2 2" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="21 4 0.5" rotation ="0 90 0"> </a-box>
-		<a-box position="-5.5 0 -7.5" material="src: #wall; repeat: 3 2;" color = "#f1e2d2" width = "1.5" depth="1.5" height="3" scale ="10 4 0.5" rotation ="0 90 0"> </a-box>
-		<a-box position="-7.2 4.7 -0.125"material="src: #wall; repeat: 2 2;" color = "#f1e2d2" width = "1" depth=".5" height="1.5" scale ="4 2.1 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-7.7 1.2 0.8" material="src: #hardwood; repeat: 1 1;" color = "#f3fbff" width = "1" depth=".5" scale ="3 3.7 0.2" rotation ="0 -45 0"> </a-box>
-		<a-box position="-9.2 0 -0.126" material="src: #wall; repeat: 1 5;" color = "#f1e2d2" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-9.2 0 4" material="src: #wall; repeat: 1 5;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="-2 6 4" material="src: #wall; repeat: 5 1;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="17 1 0.5" rotation ="0 0 0"> </a-box>
-		<a-box position="5.5 0 4" material="src: #wall; repeat: 1 5;" color = "#f1e2d3" width = "1" depth=".5" height="3" scale ="1 4 1.3" rotation ="0 0 0"> </a-box>
-		<a-box position="-9.5 0 4" material="src: #wall; repeat: 5 2;" color = "#f1e2d3" width = "1.5" depth="1.5" height="3" scale ="16 4 0.5" rotation ="0 90 0"> </a-box>
-<a-box position="-9.5 1 13" shadow="cast: true" material="src: #plastic; repeat: 2 4;" color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 10" rotation ="0 0 0"> </a-box>
-<a-box position="-9.5 1 16" shadow="cast: true" material="src: #plastic; repeat: 2 4;" color = "#f3fbff" width = "1.5" depth="3" height="0.1" scale ="3 2 10" rotation ="0 90 0"> </a-box>
-<a-box position="5.5 1 8" shadow="cast: true" material="src: #plastic; repeat: 2 4;" color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="3 2 16" rotation ="0 0 0"> </a-box>
-		<a-box position="0 0 16" material="src: #wall; repeat: 5 2;" color = "#f1f0ee" width = "1.5" depth="1.5" height="3" scale ="15 4 0.5" rotation ="0 0 0"> </a-box>
 		
-		<a-box id = "table" shadow = "cast: true"  position="-2 1 7" material="src: #wood; repeat: 2 7;" color = "#f3fbff" width = "1.5" depth="1.5" height="0.1" scale ="1.5 2 4.3" rotation ="0 0 0">	</a-box>
+		AFRAME.registerComponent('random-color', {
+		  dependencies: ['material'],
+
+		  init: function () {
+			this.el.addEventListener('mousedown', () => {
+			console.log("click");
+			this.el.setAttribute('material', 'color', this.getRandomColor());
+		  })
+		},
+
 		
-		<a-box position="-2.965 0.5 3.961" shadow="cast: true" material ="src: #cement; repeat: 1 5;" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
-		<a-box position="-1.021 0.5 3.963" shadow="cast: true" material ="src: #cement; repeat: 1 5;" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
+		getRandomColor: function () {
+		  const letters = '0123456789ABCDEF';
+		  var color = '#';
+		  for (var i = 0; i < 6; i++ ) {
+			color += letters[Math.floor(Math.random() * 16)];
+		  }
+		  return color;
+		}
+		});
 		
-		<a-box position="-3.047 0.5 10.115" shadow="cast: true" material ="src: #cement; repeat: 1 5;" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
-		<a-box position="-1.011 0.5 10.100" shadow="cast: true" material ="src: #cement; repeat: 1 5;" color = "#f3fbff" width = "0.7" depth="0.7" height="1" scale ="0.2 1 0.2" rotation ="0 0 0"> </a-box>
-		
-		<a-box   position = "0 6.5 0" material="src: #wall; repeat: 3 3;" scale = "22 1 32" rotation="0 0 0"> </a-box>
-		<a-sky color = "lightblue" > </a-sky>
-		
-		  <a-entity light="type: directional;
-                   castShadow: true;
-                   intensity: 0.2"
-                  
-            position="-0.5 1 1"></a-entity>
+
+
+
+					AFRAME.registerComponent('box-spawner', {
+		  init: function () {
+			this.el.sceneEl.addEventListener('loaded', () => {
+			  this.spawnNextBox();
+			});
+		  },
+
+		  spawnNextBox: function () {
+			const sceneEl = this.el.sceneEl;
+
+			const box = document.createElement('a-box');
+			box.setAttribute('color', '#' + Math.floor(Math.random() * 16777215).toString(16));
+			box.setAttribute('depth', 1);
+			box.setAttribute('height', 0.8);
+			box.setAttribute('width', 0.8);
+			box.setAttribute('click-gone','');
+
 			
+			const randomInRange = (min, max) => Math.random() * (max - min) + min;
+			const x = randomInRange(-4, 4);
+			const y = randomInRange(1, 3);
+			const z = randomInRange(-5, -8);
 
-						<!-- LIGHT PANELS BACK -->
-		
-<a-box position = "-2 6 -3" color = "#fdf5e9" scale = "2 0.5 1.8"> </a-box>
-		
-<a-entity light="type: spot; distance: 15.78; angle: 100; decay: -0.39; 
-                 intensity: 0.9; shadowCameraTop: 5.25; shadowRadius: 1.34; 
-                 penumbra: 0.4; castShadow: true"
-          position="-2 5.4 -3"  
-          color="white" 
-          rotation="-90 0 0">
-</a-entity>
-		
-		<a-light position = "-2 5.4 -3" type = "point" intensity = "0.6" decay = "0.2" angle = "5" color = "white"> </a-light>
-		
-		<a-box position = "2 6 -3" color = "#fdf5e9" scale = "2 0.5 1.8"> </a-box>
-		
-		<a-light position = "2 5.4 -3" type = "point" intensity = "0.6" decay = "0.2" angle = "5" color = "white"> </a-light>
-		
-<a-entity light="type: spot; distance: 15.78; angle: 100; decay: -0.39; 
-                 intensity: 0.9; shadowCameraTop: 5.25; shadowRadius: 1.34; 
-                 penumbra: 0.4; castShadow: true"
-          position="2 5.4 -3"  
-          color="white" 
-          rotation="-90 0 0">
-</a-entity>
+			box.setAttribute('position', { x, y, z });
+			sceneEl.appendChild(box);
 
-							<!-- LIGHT PANELS FRONT -->
-							
-	<a-box position = "-5 6 10" color = "#fdf5e9" scale = "2 0.5 1.8"> </a-box>
-		
-<a-entity light="type: spot; distance: 15.78; angle: 100; decay: -0.39; 
-                 intensity: 0.3; shadowCameraTop: 5.25; shadowRadius: 1.34; 
-                 penumbra: 0.4; castShadow: true"
-          position="-5 5.4 10"  
-          color="white" 
-          rotation="-90 0 0">
-</a-entity>
-		
-		<a-light position = "-5 5.4 10" type = "point" intensity = "0.5" decay = "0.2" angle = "5" color = "white"> </a-light>
-		
-		<a-box position = "2 6 10" color = "#fdf5e9" scale = "2 0.5 1.8"> </a-box>
-		
-		<a-light position = "2 5.4 10" type = "point" intensity = "0.5" decay = "0.2" angle = "5" color = "white"> </a-light>
-		
-<a-entity light="type: spot; distance: 15.78; angle: 100; decay: -0.39; 
-                 intensity: 0.3; shadowCameraTop: 5.25; shadowRadius: 1.34; 
-                 penumbra: 0.4; castShadow: true"
-          position="2 5.4 10"  
-          color="white" 
-          rotation="-90 0 0">
-</a-entity>
-							
-		
-		<a-plane shadow = "receive: true" material = "src: #tiles; repeat: 13 13;" color = "#858585"  height="50" width="50" rotation="-90 0 0"></a-plane>
-		
-					
+			
+			setTimeout(() => {
+			  if (box.parentNode) {
+				box.parentNode.removeChild(box);
+			  }
+			  this.spawnNextBox();
+			}, 500);
+		  }
+		});
 		
 		
+				AFRAME.registerComponent('click-gone', {
+
+		  init: function () {
+			this.el.addEventListener('mousedown', () => {
+			console.log("click");
+			this.el.setAttribute('visible',false);
+		  })
+		}});
 		
-	</a-scene>
+
+
+
+
+</script>
+
+<body>
+  <a-scene>
+
+	<a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
+
+    <a-entity id="player" camera look-controls="pointerLockEnabled: true" wasd-controls position="0 1.8 2">
+      <a-entity cursor="fuse: true; fuseTimeOut: 1500"
+                position="0 0 -1"
+                geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
+                material="color: red; shader: flat">
+      </a-entity>
+    </a-entity>
+
+<a-sky color = "lightblue"  theta-length="90" radius="30"> </a-sky>
 	
-	</body>
+	
+	<!--
+	
+    <a-entity random-color position="1 2 -3" geometry="primitive: box" visible="false" hover-scale>
+      <a-text value="Blue Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
+    </a-entity>
 
-
+    <a-box random-color color="red" position="-1 2 -3" visible="false" hover-scale>
+      <a-text value="Red Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
+    </a-box>
+	
+	-->
+	
+	<a-entity box-spawner  ></a-entity>
+	
+  </a-scene>
+</body>
 </html>
