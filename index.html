@@ -5,28 +5,53 @@
 </head>
 
 <script>
-		
-		AFRAME.registerComponent('random-color', {
-		  dependencies: ['material'],
 
-		  init: function () {
-			this.el.addEventListener('mousedown', () => {
-			console.log("click");
-			this.el.setAttribute('material', 'color', this.getRandomColor());
-		  })
-		},
+
+	AFRAME.registerComponent('hover-scale', {
+		init: function () { 
+			const el = this.el;
+			const text = el.querySelector('a-text');
+
+			el.addEventListener('mouseenter', () => {
+				el.removeAttribute('animation__scale'); 
+				el.setAttribute('animation__scale', {
+					property: 'scale',
+					to: '2 2 2',
+					dur: 300,
+					easing: 'easeOutCubic'
+				  });
+				text.setAttribute('visible',true);
+			}
+			);
+
+			el.addEventListener('mouseleave', () => {
+			  el.removeAttribute('animation__scale'); 
+			  el.setAttribute('animation__scale', {
+				property: 'scale',
+				to: '1 1 1',
+				dur: 200,
+				easing: 'easeOutCubic'
+			  });
+			  text.setAttribute('visible',false);
+			}
+			);
+		  }
+		});
+		
+
 
 		
-		getRandomColor: function () {
+		function getRandomColor() {
 		  const letters = '0123456789ABCDEF';
 		  var color = '#';
 		  for (var i = 0; i < 7; i++ ) {
 			color += letters[Math.floor(Math.random() * 16)];
+			
 		  }
-			console.log("color: " + color);
+		  console.log("color: " + color);
 		  return color;
 		}
-		});
+		
 		
 
 
@@ -42,7 +67,7 @@
 			const sceneEl = this.el.sceneEl;
 
 			const box = document.createElement('a-box');
-			box.setAttribute('color', '#' + Math.floor(Math.random() * 16777215).toString(16));
+			box.setAttribute('color', getRandomColor());
 			box.setAttribute('depth', 1);
 			box.setAttribute('height', 0.8);
 			box.setAttribute('width', 0.8);
@@ -79,6 +104,8 @@
 		
 
 
+
+
 </script>
 
 <body>
@@ -96,7 +123,18 @@
 
 <a-sky color = "lightblue"  theta-length="90" radius="30"> </a-sky>
 	
+	
+	<!--
+	
+    <a-entity random-color position="1 2 -3" geometry="primitive: box" visible="false" hover-scale>
+      <a-text value="Blue Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
+    </a-entity>
 
+    <a-box random-color color="red" position="-1 2 -3" visible="false" hover-scale>
+      <a-text value="Red Box" position="-0.5 1 0.5" visible="false" color="lightblue"></a-text>
+    </a-box>
+	
+	-->
 	
 	<a-entity box-spawner  ></a-entity>
 	
