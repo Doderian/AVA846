@@ -114,7 +114,7 @@
 		
 					AFRAME.registerComponent('box-spawner', {
 				  schema: {
-					limit: { type: 'int', default: 50 }
+					limit: { type: 'int', default: 10 }
 				  },
 
 				  init: function () {
@@ -152,7 +152,15 @@
 					box.setAttribute('height', 0.8);
 					box.setAttribute('width', 0.8);
 					box.setAttribute('click-gone', '');
-
+					
+					
+					const sound = document.createElement('a-sound');
+					sound.setAttribute('src', '#clickSound');
+					sound.setAttribute('on', 'click');
+					sound.setAttribute('autoplay', 'false');
+					box.appendChild(sound);
+					
+					
 					const randomInRange = (min, max) => Math.random() * (max - min) + min;
 					const x = randomInRange(-4, 4);
 					const y = randomInRange(1, 3);
@@ -183,9 +191,14 @@
 		  
 			this.el.addEventListener('mousedown', () => {
 			console.log("click");
+			
+			 const soundEl = this.el.querySelector('a-sound');
+			 if (soundEl) soundEl.components.sound.playSound();
+			
 			counter();
 			this.el.setAttribute('visible',false);
-		  })
+			
+			})
 		}});
 		
 		
@@ -208,7 +221,13 @@
 
 <body>
   <a-scene>
-
+	
+	
+		<a-assets>
+			<audio id = "clickSound" src = "assets/blip.wav"> </audio>
+		</a-assets>
+	
+	
 	<a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
 
 	<a-sky color = "lightblue"  theta-length="90" radius="30"> </a-sky>
