@@ -11,11 +11,14 @@
 		
 		const counterText = document.querySelector('#counterText');
 		
+		
+		
+		
 		function getRandomColor() {
 		  const letters = '0123456789ABCDEF';
 		  var color = '#';
 		  for (var i = 0; i < 6; i++ ) {
-			color += letters[Math.floor(Math.random() * 16)];
+			color = color + letters[Math.floor(Math.random() * 16)];
 			
 		  }
 		  
@@ -68,7 +71,7 @@
 
 			  count = 0;
 			  const limit = spawnerEl.getAttribute('box-spawner').limit;
-			  counterText.setAttribute('text', 'value', `0/${limit}`);
+			  counterText.setAttribute('text', 'value', `0/` + limit);
 			  counterText.setAttribute('visible', true);
 
 			  spawnerEl.setAttribute('visible', true);
@@ -101,7 +104,7 @@
 			  const spawner = document.querySelector('#spawner');
 			  if (spawner) {
 				spawner.setAttribute('box-spawner', 'limit', this.data.value);
-				console.log(`Spawn limit set to ${this.data.value}`);
+				console.log(`Spawn limit set to` + this.data.value);
 			  }
 			});
 		  }
@@ -134,7 +137,7 @@
 					if (!this.running || this.spawnedCount >= this.data.limit) {
 					  this.running = false;
 
-					  // Show the Start button again
+					  // show the start button again
 					  const startButton = document.querySelector('[start-button]');
 					  if (startButton) {
 						startButton.setAttribute('visible', true);
@@ -176,7 +179,7 @@
 						box.parentNode.removeChild(box);
 					  }
 					  this.spawnNextBox();
-					}, 500);
+					}, 750);
 				  }
 				});
 
@@ -196,7 +199,8 @@
 			 if (soundEl) soundEl.components.sound.playSound();
 			
 			counter();
-			this.el.setAttribute('visible',false);
+			this.el.setAttribute('color', `#000000`);
+			//this.el.setAttribute('visible',false);
 			
 			})
 		}});
@@ -212,8 +216,8 @@
 		  count++;
 
 		  const limit = spawnerEl.getAttribute('box-spawner').limit;
-		  counterText.setAttribute('text', 'value', `${count}/${limit}`);
-		  console.log(`Counter: ${count}/${limit}`);
+		  counterText.setAttribute('text', 'value', count + `/` + limit);
+		  console.log(`Counter:` + count + `/` + limit);
 		}
 
 
