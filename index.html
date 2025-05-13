@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="aframe.min.js"></script>
+
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+   <script src="dist/aframe-particle-system-component.min.js"></script>
+
+<link rel="icon" href="data:,">
+
 
 </head>
 
@@ -157,11 +163,13 @@
 					box.setAttribute('click-gone', '');
 					
 					
+					
 					const sound = document.createElement('a-sound');
 					sound.setAttribute('src', '#clickSound');
 					sound.setAttribute('on', 'click');
 					sound.setAttribute('autoplay', 'false');
 					box.appendChild(sound);
+						
 					
 					
 					const randomInRange = (min, max) => Math.random() * (max - min) + min;
@@ -179,13 +187,45 @@
 						box.parentNode.removeChild(box);
 					  }
 					  this.spawnNextBox();
-					}, 750);
+					}, 660);
 				  }
 				});
 
 
 		
+				function particles(position){
+				let particle = document.createElement('a-entity');
+						console.log('1');
+					
+					 particle.setAttribute('particle-system', {
+						particleCount: 100,
+						size: [0.5, 0],
+						color: ['#ffffff', '#000000'],
+						velocityValue: '0 2 0',
+						accelerationValue: '0 -3 0',
+						duration: 0.05,
+						maxAge: 1.5,
+						blending: 2,
+						texture: './assets/smokeparticle.png',
+						opacity: [0.2, 0]
+					  });
+					  
+					  console.log('2');
+					  
+					  particle.setAttribute('position', position );
+					  document.getElementById('scene').appendChild(particle);
+					  
+						
+						
+						console.log('3');
+						
+					  setTimeout(() => {
+						particle.parentNode && particle.parentNode.removeChild(particle);
+					  }, 500);
 		
+		
+		
+		}
 		
 		
 			AFRAME.registerComponent('click-gone', {
@@ -197,10 +237,15 @@
 			
 			 const soundEl = this.el.querySelector('a-sound');
 			 if (soundEl) soundEl.components.sound.playSound();
+			 
+			particles(this.el.getAttribute('position'));
+			
+			console.log('4');
+			
 			
 			counter();
-			this.el.setAttribute('color', `#000000`);
-			//this.el.setAttribute('visible',false);
+			//this.el.setAttribute('color', `#000000`);
+			this.el.setAttribute('visible',false);
 			
 			})
 		}});
@@ -224,17 +269,31 @@
 </script>
 
 <body>
-  <a-scene>
+  <a-scene id="scene">
 	
 	
 		<a-assets>
 			<audio id = "clickSound" src = "assets/blip.wav"> </audio>
+			
+			<img id= "raindrop" src = "assets/raindrop.png">
+			<img id= "cloud" src = "assets/cloud.png">
+			<img id= "cloudSml" src = "assets/cloudSml.png">
+			<img id= "shockwave" src = "assets/shockwave.png">
+			<img id= "smokeparticle" src = "assets/smokeparticle.png">
+			<img id= "star" src = "assets/star.png">
+			<img id= "star2" src = "assets/star2.png">
+			<img id= "hardwood" src = "assets/hardwoodFloor.jpg">
+			
 		</a-assets>
 	
 	
-	<a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
+			  <a-entity position="0 2.25 -15" particle-system="preset: dust; particleCount: 1500; size: 0.5"></a-entity>
 
-	<a-sky color = "lightblue"  theta-length="90" radius="30"> </a-sky>
+
+	
+	<a-cylinder id="ground" position="0 0 -3" material="src: #hardwood; repeat: 6 6;" radius="6" height="0.1"></a-cylinder>
+
+	<a-sky color="black"></a-sky>
 	
 	
     <a-entity id="player" camera look-controls="pointerLockEnabled: true" wasd-controls position="0 1.8 2">
@@ -272,23 +331,29 @@
 		
 		<a-box hover-scale class="clickable" color="#2196F3" position="-1 0.5 -3" width="1" height="0.4" depth="0.3" 
        set-limit="value: 10">
-		  <a-text value="10" align="center" position="0 0 0.3" width="4"></a-text>
+		  <a-text value="10" align="center" position="0 0 0.2" width="4"></a-text>
 		</a-box>
 
 		<a-box hover-scale class="clickable" color="#FFC107" position="0 0.5 -3" width="1" height="0.4" depth="0.3" 
 			   set-limit="value: 25">
-		  <a-text value="25" align="center" position="0 0 0.3" width="4"></a-text>
+		  <a-text value="25" align="center" position="0 0 0.2" width="4"></a-text>
 		</a-box>
 
 		<a-box hover-scale class="clickable" color="#FF5722" position="1 0.5 -3" width="1" height="0.4" depth="0.3" 
 			   set-limit="value: 50">
-		  <a-text value="50" align="center" position="0 0 0.3" width="4"></a-text>
+		  <a-text value="50" align="center" position="0 0 0.2" width="4"></a-text>
 		</a-box>
 	
 	
-	<a-entity id="spawner" box-spawner visible="false"  >
+	<a-entity id="spawner"
+	box-spawner 
+	visible="false"  >
 
 	</a-entity>
+	
+	<a-entity light="type: directional; intensity: 0.8" position="1 3 2"></a-entity> 
+
+	<a-entity light="type: ambient; intensity: 0.3"></a-entity> 
 	
   </a-scene>
 </body>
