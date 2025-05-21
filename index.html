@@ -3,8 +3,9 @@
 <head>
 
 
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
    <script src="dist/aframe-particle-system-component.min.js"></script>
+   <script src="https://unpkg.com/aframe-watcher/dist/aframe-watcher.min.js"></script>
 
 <link rel="icon" href="data:,">
 
@@ -42,7 +43,7 @@
 				el.removeAttribute('animation__scale'); 
 				el.setAttribute('animation__scale', {
 					property: 'scale',
-					to: '2 2 2',
+					to: '1.5 1.5 1.5',
 					dur: 300,
 					easing: 'easeOutCubic'
 				  });
@@ -64,58 +65,150 @@
 		  }
 		});
 		
-					AFRAME.registerComponent('start-button', {
-		  init: function () {
-			this.enabled = true;
-			this.clickHandler = () => {
-			  if (!this.enabled) return;
+		
+		
+						AFRAME.registerComponent('start-button', {
+				  init: function () {
+					this.enabled = true;
 
-			  const counterText = document.querySelector('#counterText');
-			  const spawnerEl = document.querySelector('#spawner');
+					this.clickHandler = () => {
+					  if (!this.enabled) return;
 
-			  if (!spawnerEl || !counterText) return;
+					  const counterText = document.querySelector('#counterText');
+					  const spawnerEl = document.querySelector('#spawner');
+					  const stopButton = document.querySelector('[stop-button]');
 
-			  count = 0;
-			  const limit = spawnerEl.getAttribute('box-spawner').limit;
-			  counterText.setAttribute('text', 'value', `0/` + limit);
-			  counterText.setAttribute('visible', true);
+					  if (!spawnerEl || !counterText) return;
 
-			  spawnerEl.setAttribute('visible', true);
-			  spawnerEl.components['box-spawner'].startSpawning();
+					  count = 0;
+					  const limit = spawnerEl.getAttribute('box-spawner').limit;
+					  counterText.setAttribute('text', 'value', `0/` + limit);
+					  counterText.setAttribute('visible', true);
 
-			  this.enabled = false;
-			  this.el.setAttribute('visible', false);
-			};
+					  spawnerEl.setAttribute('visible', true);
+					  spawnerEl.components['box-spawner'].startSpawning();
 
-			this.el.addEventListener('click', this.clickHandler);
-		  },
+					  this.enabled = false;
+					  this.el.setAttribute('visible', false);
 
-		  enable: function () {
-			this.enabled = true;
-		  }
-		});
+					  if (stopButton) {
+						stopButton.setAttribute('visible', true);
+						stopButton.components['stop-button'].enable();
+					  }
+					};
+
+					this.el.addEventListener('click', this.clickHandler);
+				  },
+
+				  enable: function () {
+					this.enabled = true;
+				  }
+				});
 
 
-			
-			
-			
-			
+
+
+
+
+				AFRAME.registerComponent('stop-button', {
+				  init: function () {
+					this.enabled = false;
+					this.spawnerEl = document.querySelector('#spawner');
+					this.startButton = document.querySelector('[start-button]');
+					
+					this.spawnerEl.addEventListener('spawn-finished', () => 
+					{
+					  this.enabled = false;
+					  this.el.setAttribute('visible', false);
+					});
+
+					this.clickHandler = () => {
+					  if (!this.enabled) return;
+
+					  // Stop spawning
+					  if (this.spawnerEl) {
+						this.spawnerEl.components['box-spawner'].running = false;
+					  }
+
+					  // Show start button again
+					  if (this.startButton) {
+						this.startButton.setAttribute('visible', true);
+						this.startButton.components['start-button'].enable();
+					  }
+
+					  // Disable and hide this stop button
+					  this.enabled = false;
+					  this.el.setAttribute('visible', false);
+					};
+
+					this.el.addEventListener('click', this.clickHandler);
+				  },
+
+				  enable: function () {
+					this.enabled = true;
+					this.el.setAttribute('visible', true);
+				  }
+				});
+
+
+
+
 			
 
 					AFRAME.registerComponent('set-limit', {
-		  schema: { value: { type: 'int' } },
+				  schema: { value: { type: 'int' } },
 
-		  init: function () {
-			this.el.addEventListener('click', () => {
-			  const spawner = document.querySelector('#spawner');
-			  if (spawner) {
-				spawner.setAttribute('box-spawner', 'limit', this.data.value);
-				console.log(`Spawn limit set to` + this.data.value);
-			  }
-			});
-		  }
-		});
-		
+				  init: function () 
+				  {
+					this.el.addEventListener('click', () => 
+						{
+						
+						 const soundEl = this.el.querySelector('a-sound');
+						 
+						  if (soundEl) 
+						  {
+								soundEl.setAttribute('poolSize', 5);
+								soundEl.components.sound.playSound();
+						  }
+						
+						const spawner = document.querySelector('#spawner');
+
+						  if (spawner)
+						  {
+								spawner.setAttribute('box-spawner', 'limit', this.data.value);
+								console.log(`Spawn limit set to` + this.data.value);
+						  }
+						}
+					);
+				  }
+				});
+				
+				
+				
+						AFRAME.registerComponent('set-difficulty', {
+					  schema: { interval: { type: 'int' } },
+
+					  init: function () {
+						this.el.addEventListener('click', () => {
+						
+						 const soundEl = this.el.querySelector('a-sound');
+						 
+						  if (soundEl) 
+						  {
+								soundEl.setAttribute('poolSize', 5);
+								soundEl.components.sound.playSound();
+						  }
+						  
+						  const spawner = document.querySelector('#spawner');
+						  
+						  if (spawner)
+						  {
+								spawner.setAttribute('box-spawner', 'spawnInterval', this.data.interval);
+								console.log(`Difficulty set. Interval: ${this.data.interval}ms`);
+						  }
+						});
+					  }
+					});
 		
 		
 		
@@ -123,7 +216,8 @@
 		
 					AFRAME.registerComponent('box-spawner', {
 				  schema: {
-					limit: { type: 'int', default: 10 }
+					limit: { type: 'int', default: 10 },
+					spawnInterval: { type: 'int', default: 660 }
 				  },
 
 				  init: function () {
@@ -133,6 +227,8 @@
 
 				  startSpawning: function () {
 					if (this.running) return;
+				
+
 
 					this.spawnedCount = 0;
 					this.running = true;
@@ -142,6 +238,8 @@
 				  spawnNextBox: function () {
 					if (!this.running || this.spawnedCount >= this.data.limit) {
 					  this.running = false;
+					  
+					  this.el.emit('spawn-finished');
 
 					  // show the start button again
 					  const startButton = document.querySelector('[start-button]');
@@ -187,7 +285,7 @@
 						box.parentNode.removeChild(box);
 					  }
 					  this.spawnNextBox();
-					}, 660);
+					}, this.data.spawnInterval);
 				  }
 				});
 
@@ -198,7 +296,7 @@
 						console.log('1');
 					
 					 particle.setAttribute('particle-system', {
-						particleCount: 100,
+						particleCount: 300,
 						size: [0.5, 0],
 						color: ['#ffffff', '#000000'],
 						velocityValue: '0 2 0',
@@ -206,7 +304,7 @@
 						duration: 0.05,
 						maxAge: 1.5,
 						blending: 2,
-						texture: './assets/smokeparticle.png',
+						texture: './assets/cloudSml.png',
 						opacity: [0.2, 0]
 					  });
 					  
@@ -223,10 +321,29 @@
 						particle.parentNode && particle.parentNode.removeChild(particle);
 					  }, 500);
 		
+				}
 		
 		
-		}
-		
+		  AFRAME.registerComponent('player-constraints', {
+			schema: {
+			  minX: { type: 'number', default: -5 },
+			  maxX: { type: 'number', default: 5 },
+			  minZ: { type: 'number', default: -5 },
+			  maxZ: { type: 'number', default: 5 }
+			},
+
+			tick: function () {
+			  const position = this.el.getAttribute('position');
+
+			  
+			  position.x = Math.max(this.data.minX, Math.min(this.data.maxX, position.x));
+			  position.z = Math.max(this.data.minZ, Math.min(this.data.maxZ, position.z));
+
+			  this.el.setAttribute('position', position);
+			}
+		  });
+		  
+		  
 		
 			AFRAME.registerComponent('click-gone', {
 
@@ -242,8 +359,11 @@
 			
 			console.log('4');
 			
-			
+			if (this.el.getAttribute('visible') == true)
+			{
 			counter();
+			}
+			
 			//this.el.setAttribute('color', `#000000`);
 			this.el.setAttribute('visible',false);
 			
@@ -291,12 +411,12 @@
 
 
 	
-	<a-cylinder id="ground" position="0 0 -3" material="src: #hardwood; repeat: 6 6;" radius="6" height="0.1"></a-cylinder>
+	<a-cylinder id="ground" position="0 0 -3" material="src: #hardwood; repeat: 7 7;" radius="7" height="0.1"></a-cylinder>
 
 	<a-sky color="black"></a-sky>
 	
 	
-    <a-entity id="player" camera look-controls="pointerLockEnabled: true" wasd-controls position="0 1.8 2">
+    <a-entity id="player" camera look-controls="pointerLockEnabled: true" wasd-controls position="0 1.8 2" player-constraints="minX: -4; maxX: 4; minZ: -2; maxZ: 2">
       <a-entity cursor
 				raycaster="objects: .clickable"
 				position="0 0 -1"
@@ -329,22 +449,93 @@
 		 
 		</a-box>
 		
-		<a-box hover-scale class="clickable" color="#2196F3" position="-1 0.5 -3" width="1" height="0.4" depth="0.3" 
-       set-limit="value: 10">
-		  <a-text value="10" align="center" position="0 0 0.2" width="4"></a-text>
+		 <a-box id="stopButton"
+		class="clickable"
+         color="#F44336"
+         position="3 2.5 -3"
+         depth="0.5"
+         height="0.5"
+         width="1.5"
+		 visible="false"
+         stop-button
+		 hover-scale
+		 >
+		 <a-text value="Stop test" position="-0.5 0 0.3" visible="true"></a-text>
+		 
 		</a-box>
+		
+		<a-entity position="-3.3 0 0" rotation="0 38 0">
+		
+		
+				<a-box hover-scale class="clickable" color="#8BC34A" position="-1 0.5 -3" width="1" height="0.4" depth="0.3" 
+						set-limit="value: 10">
+			   
+					<a-text value="10" align="center" position="0 0 0.2" width="4"></a-text>
+					<a-sound src = "#clickSound" sound> </a-sound>
+				  
+				</a-box>
 
-		<a-box hover-scale class="clickable" color="#FFC107" position="0 0.5 -3" width="1" height="0.4" depth="0.3" 
-			   set-limit="value: 25">
-		  <a-text value="25" align="center" position="0 0 0.2" width="4"></a-text>
-		</a-box>
 
-		<a-box hover-scale class="clickable" color="#FF5722" position="1 0.5 -3" width="1" height="0.4" depth="0.3" 
-			   set-limit="value: 50">
-		  <a-text value="50" align="center" position="0 0 0.2" width="4"></a-text>
-		</a-box>
+
+				<a-box hover-scale class="clickable" color="#FFC107" position="0 0.5 -3" width="1" height="0.4" depth="0.3" 
+					   set-limit="value: 25">
+					   
+					<a-text value="25" align="center" position="0 0 0.2" width="4"></a-text>
+					<a-sound src = "#clickSound" sound> </a-sound>
+				  
+				</a-box>
+
+
+
+				<a-box hover-scale class="clickable" color="#FF5722" position="1 0.5 -3" width="1" height="0.4" depth="0.3" 
+					   set-limit="value: 50">
+					   
+					<a-text value="50" align="center" position="0 0 0.2" width="4"></a-text>
+					<a-sound src = "#clickSound" sound> </a-sound>
+				  
+				</a-box>
+				
+				
+				
+				<a-text value="Click to set box limit" position = "-1 0.2 -2.5" rotation="-50 0 0"> </a-text>
+				
+				
+				
+				
+			
+			
+				<a-box hover-scale class="clickable" color="#8BC34A" position="-1 1.5 -3" width="1" height="0.4" depth="0.3"
+					   set-difficulty="interval: 1000">
+					   
+				<a-text value="Easy" align="center" position="0 0 0.2" width="4"></a-text>
+				<a-sound src = "#clickSound" sound> </a-sound>
+					
+				</a-box>
+
+
+				<a-box hover-scale class="clickable" color="#FFC107" position="0 1.5 -3" width="1" height="0.4" depth="0.3"
+					   set-difficulty="interval: 660">
+					   
+				<a-text value="Medium" align="center" position="0 0 0.2" width="4"></a-text>
+				<a-sound src = "#clickSound" sound> </a-sound>
+				  
+				</a-box>
+
+
+				<a-box hover-scale class="clickable" color="#F44336" position="1 1.5 -3" width="1" height="0.4" depth="0.3"
+					   set-difficulty="interval: 500">
+					   
+				 <a-text value="Hard" align="center" position="0 0 0.2" width="4"></a-text>
+				 <a-sound src = "#clickSound" sound> </a-sound>
+				  
+				</a-box>
+	
+				<a-text value="Click to choose difficulty" position = "-1.2 1.1 -2.6" rotation="-40 0 0"> </a-text>
+				
+	</a-entity>
 	
 	
+		
 	<a-entity id="spawner"
 	box-spawner 
 	visible="false"  >
