@@ -5,7 +5,7 @@
 
    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
    <script src="dist/aframe-particle-system-component.min.js"></script>
-   <script src="https://unpkg.com/aframe-watcher/dist/aframe-watcher.min.js"></script>
+
 
 <link rel="icon" href="data:,">
 
@@ -21,16 +21,19 @@
 		
 		
 		
-		function getRandomColor() {
-		  const letters = '0123456789ABCDEF';
-		  var color = '#';
-		  for (var i = 0; i < 6; i++ ) {
-			color = color + letters[Math.floor(Math.random() * 16)];
+		function getRandomColor() 
+		
+			{
 			
-		  }
-		  
-		  return color;
-		}
+			  const letters = '0123456789ABCDEF';
+			  var color = '#';
+			  for (var i = 0; i < 6; i++ ) {
+				color = color + letters[Math.floor(Math.random() * 16)];
+				
+			  }
+			  
+			  return color;
+			}
 		
 		
 		
@@ -67,6 +70,42 @@
 		
 		
 		
+		
+		
+		
+		AFRAME.registerComponent('hover-scale-start', {
+		init: function () {
+			const el = this.el;
+			const text = el.querySelector('a-text');
+
+			el.addEventListener('mouseenter', () => {
+				el.removeAttribute('animation__scale'); 
+				el.setAttribute('animation__scale', {
+					property: 'scale',
+					to: '3 3 3',
+					dur: 300,
+					easing: 'easeOutCubic'
+				  });
+				
+			}
+			);
+
+			el.addEventListener('mouseleave', () => {
+			  el.removeAttribute('animation__scale'); 
+			  el.setAttribute('animation__scale', {
+				property: 'scale',
+				to: '2 2 2',
+				dur: 200,
+				easing: 'easeOutCubic'
+			  });
+			  
+			}
+			);
+		  }
+		});
+		
+		
+		
 						AFRAME.registerComponent('start-button', {
 				  init: function () {
 					this.enabled = true;
@@ -76,7 +115,7 @@
 
 					  const counterText = document.querySelector('#counterText');
 					  const spawnerEl = document.querySelector('#spawner');
-					  const stopButton = document.querySelector('[stop-button]');
+					 
 
 					  if (!spawnerEl || !counterText) return;
 
@@ -85,16 +124,16 @@
 					  counterText.setAttribute('text', 'value', `0/` + limit);
 					  counterText.setAttribute('visible', true);
 
+					  startCountdown(() => 
+					  {
 					  spawnerEl.setAttribute('visible', true);
 					  spawnerEl.components['box-spawner'].startSpawning();
+					});
 
 					  this.enabled = false;
 					  this.el.setAttribute('visible', false);
 
-					  if (stopButton) {
-						stopButton.setAttribute('visible', true);
-						stopButton.components['stop-button'].enable();
-					  }
+					 
 					};
 
 					this.el.addEventListener('click', this.clickHandler);
@@ -112,6 +151,7 @@
 
 				AFRAME.registerComponent('stop-button', {
 				  init: function () {
+				  
 					this.enabled = false;
 					this.spawnerEl = document.querySelector('#spawner');
 					this.startButton = document.querySelector('[start-button]');
@@ -212,93 +252,172 @@
 		
 		
 		
+							function startCountdown(callback)
+
+							{
+							
+							  const countdownText = document.querySelector('#countdownText');
+							   const stopButton = document.querySelector('[stop-button]');
+							  if (!countdownText) return;
+
+							  const countdownValues = ["3", "2", "1"];
+							  let index = 0;
+
+							  countdownText.setAttribute('visible', true);
+							  countdownText.setAttribute('text', 'value', countdownValues[index]);
+
+							  const interval = setInterval(() => {
+								index++;
+								
+								if (index < countdownValues.length) 
+									{
+									  countdownText.setAttribute('text', 'value', countdownValues[index]);
+									} 
+									
+								else 
+								
+									{
+									  clearInterval(interval);
+									  countdownText.setAttribute('visible', false);
+									  
+									  if (callback) callback();  
+									   
+									   if (stopButton) 
+									   {
+										stopButton.setAttribute('visible', true);
+										stopButton.components['stop-button'].enable();
+									   }
+								  
+									}
+								  }, 750);
+							}
+					
+					
 		
 		
-					AFRAME.registerComponent('box-spawner', {
+					AFRAME.registerComponent('box-spawner', 
+					{
 				  schema: {
 					limit: { type: 'int', default: 10 },
 					spawnInterval: { type: 'int', default: 660 }
 				  },
 
-				  init: function () {
-					this.spawnedCount = 0;
-					this.running = false;
-				  },
-
-				  startSpawning: function () {
-					if (this.running) return;
-				
-
-
-					this.spawnedCount = 0;
-					this.running = true;
-					this.spawnNextBox();
-				  },
-
-				  spawnNextBox: function () {
-					if (!this.running || this.spawnedCount >= this.data.limit) {
+				  init: function () 
+				  
+				    {
+					  this.spawnedCount = 0;
 					  this.running = false;
-					  
-					  this.el.emit('spawn-finished');
+					  this.spawnTimeout = null;
 
-					  // show the start button again
-					  const startButton = document.querySelector('[start-button]');
-					  if (startButton) {
-						startButton.setAttribute('visible', true);
-						startButton.components['start-button'].enable();
+					  // Listen for external stop trigger
+					  this.el.addEventListener('stop-spawning', () => {
+						this.stopSpawning();
+					  });
+					},
+
+				stopSpawning: function () 
+				
+					{
+						  if (!this.running) return;
+
+						  this.running = false;
+
+						  if (this.spawnTimeout) {
+							clearTimeout(this.spawnTimeout);
+							this.spawnTimeout = null;
+						  }
+
+						  this.el.emit('spawn-stopped');
+					},
+
+				startSpawning: function ()
+
+				{
+				
+					  if (this.running) return;
+
+					  this.spawnedCount = 0;
+					  this.running = true;
+
+					  // Show the stop button now
+					  const stopButton = document.querySelector('[stop-button]');
+					  if (stopButton && stopButton.components['stop-button']) {
+						stopButton.components['stop-button'].enable();
 					  }
 
-					  return;
-					}
-
-					const sceneEl = this.el.sceneEl;
-					const box = document.createElement('a-box');
-					box.setAttribute('class', 'clickable');
-					box.setAttribute('color', getRandomColor());
-					box.setAttribute('depth', 1);
-					box.setAttribute('height', 0.8);
-					box.setAttribute('width', 0.8);
-					box.setAttribute('click-gone', '');
-					
-					
-					
-					const sound = document.createElement('a-sound');
-					sound.setAttribute('src', '#clickSound');
-					sound.setAttribute('on', 'click');
-					sound.setAttribute('autoplay', 'false');
-					box.appendChild(sound);
-						
-					
-					
-					const randomInRange = (min, max) => Math.random() * (max - min) + min;
-					const x = randomInRange(-4, 4);
-					const y = randomInRange(1, 3);
-					const z = randomInRange(-5, -8);
-
-					box.setAttribute('position', { x, y, z });
-					sceneEl.appendChild(box);
-
-					this.spawnedCount++;
-
-					setTimeout(() => {
-					  if (box.parentNode) {
-						box.parentNode.removeChild(box);
-					  }
 					  this.spawnNextBox();
-					}, this.data.spawnInterval);
-				  }
-				});
+					},
+
+				spawnNextBox: function () 
+				  
+					  {
+					  
+						if (!this.running || this.spawnedCount >= this.data.limit) 
+						
+						{
+							  this.running = false;
+							  
+							  this.el.emit('spawn-finished');
+
+							  // show the start button again
+							  const startButton = document.querySelector('[start-button]');
+							  if (startButton) {
+								startButton.setAttribute('visible', true);
+								startButton.components['start-button'].enable();
+							  }
+
+							  return;
+						}
+
+						const sceneEl = this.el.sceneEl;
+						const box = document.createElement('a-box');
+						box.setAttribute('class', 'clickable');
+						box.setAttribute('color', getRandomColor());
+						box.setAttribute('depth', 1);
+						box.setAttribute('height', 0.8);
+						box.setAttribute('width', 0.8);
+						box.setAttribute('click-gone', '');
+						
+						
+						
+						const sound = document.createElement('a-sound');
+						sound.setAttribute('src', '#clickSound');
+						sound.setAttribute('on', 'click');
+						sound.setAttribute('autoplay', 'false');
+						box.appendChild(sound);
+							
+						
+						
+						const randomInRange = (min, max) => Math.random() * (max - min) + min;
+						const x = randomInRange(-4, 4);
+						const y = randomInRange(1, 3);
+						const z = randomInRange(-5, -8);
+
+						box.setAttribute('position', { x, y, z });
+						sceneEl.appendChild(box);
+
+						this.spawnedCount++;
+
+						this.spawnTimeout = setTimeout(() => 
+						{
+						  if (box.parentNode) {
+							box.parentNode.removeChild(box);
+						  }
+						  this.spawnNextBox();
+						}, this.data.spawnInterval);
+					  }
+				}
+				);
 
 
 		
 				function particles(position){
 				let particle = document.createElement('a-entity');
-						console.log('1');
-					
+				
 					 particle.setAttribute('particle-system', {
 						particleCount: 300,
 						size: [0.5, 0],
-						color: ['#ffffff', '#000000'],
+						color: ['#f88e07', '#000000'],
 						velocityValue: '0 2 0',
 						accelerationValue: '0 -3 0',
 						duration: 0.05,
@@ -403,6 +522,14 @@
 			<img id= "star" src = "assets/star.png">
 			<img id= "star2" src = "assets/star2.png">
 			<img id= "hardwood" src = "assets/hardwoodFloor.jpg">
+			<img id= "floorCircle" src = "assets/floorCircle.jpg">
+			<img id= "floorCircle2" src = "assets/floorCircle2.jpg">
+			<img id= "jupiter" src = "assets/jupitermap.jpg">
+			<img id= "neptune" src = "assets/neptune.jpg">
+			<img id= "sun" src = "assets/sun.png">
+			<img id= "sky" src = "assets/sky.jpg">
+			<img id= "moon" src = "assets/moon.jpg">
+			
 			
 		</a-assets>
 	
@@ -411,9 +538,10 @@
 
 
 	
-	<a-cylinder id="ground" position="0 0 -3" material="src: #hardwood; repeat: 7 7;" radius="7" height="0.1"></a-cylinder>
+	<a-cylinder id="ground" opacity="0.9" position="0 0 -3" material="src: #floorCircle;" radius="7" height="0.1">	
+	</a-cylinder>
 
-	<a-sky color="black"></a-sky>
+	<a-sky  src = "#sky" repeat="1 1" ></a-sky>
 	
 	
     <a-entity id="player" camera look-controls="pointerLockEnabled: true" wasd-controls position="0 1.8 2" player-constraints="minX: -4; maxX: 4; minZ: -2; maxZ: 2">
@@ -438,33 +566,41 @@
 	  <a-box id="startButton"
 		class="clickable"
          color="#4CAF50"
-         position="3 1.5 -3"
+         position="0 4 -8"
+		 rotation = "15 0 0"
          depth="0.5"
          height="0.5"
          width="1.5"
+		 scale="2 2 2"
+		 
          start-button
-		 hover-scale
+		 hover-scale-start
 		 >
 		 <a-text value="Start test" position="-0.5 0 0.3" visible="true"></a-text>
 		 
 		</a-box>
 		
-		 <a-box id="stopButton"
-		class="clickable"
-         color="#F44336"
-         position="3 2.5 -3"
-         depth="0.5"
-         height="0.5"
-         width="1.5"
-		 visible="false"
-         stop-button
-		 hover-scale
-		 >
-		 <a-text value="Stop test" position="-0.5 0 0.3" visible="true"></a-text>
 		 
-		</a-box>
 		
-		<a-entity position="-3.3 0 0" rotation="0 38 0">
+		<a-entity position="-4.3 0 0.5" rotation="0 38 0">
+		
+				<a-box id="stopButton"
+				class="clickable"
+				 color="#F44336"
+				 position="0 3.5 -3"
+				 
+				 depth="0.5"
+				 height="0.5"
+				 width="1.5"
+				 visible="false"
+				 stop-button
+				 hover-scale
+				 >
+				 <a-text value="Stop test" position="-0.5 0 0.3" visible="true"></a-text>
+				 
+				</a-box>
+		
+		
 		
 		
 				<a-box hover-scale class="clickable" color="#8BC34A" position="-1 0.5 -3" width="1" height="0.4" depth="0.3" 
@@ -496,13 +632,38 @@
 				</a-box>
 				
 				
+				<a-entity position="1 0 0">
 				
-				<a-text value="Click to set box limit" position = "-1 0.2 -2.5" rotation="-50 0 0"> </a-text>
+					<a-text 
+					  value="Click to set box limit"
+					  position="-1 0.2 -2.5"
+					  rotation="-50 0 0"
+					  color="#000000"
+					  align="center"
+					  width="4.2"
+					  wrap-count="22"
+					  font = "https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+					  baseline="center"
+					  scale="1.02 1.02 1.02"
+					></a-text>
+
+					<a-text 
+					  value="Click to set box limit"
+					  position="-1 0.2 -2.48"
+					  rotation="-50 0 0"
+					  color="#12eda6"
+					  align="center"
+					  width="4.2"
+					  wrap-count="22"
+					  font ="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+					  baseline="center"
+					></a-text>
+					
+				</a-entity>
 				
 				
 				
-				
-			
+			<!------------------------------------------------------------------------!>
 			
 				<a-box hover-scale class="clickable" color="#8BC34A" position="-1 1.5 -3" width="1" height="0.4" depth="0.3"
 					   set-difficulty="interval: 1000">
@@ -522,7 +683,7 @@
 				</a-box>
 
 
-				<a-box hover-scale class="clickable" color="#F44336" position="1 1.5 -3" width="1" height="0.4" depth="0.3"
+				<a-box hover-scale class="clickable" color="#FF5722" position="1 1.5 -3" width="1" height="0.4" depth="0.3"
 					   set-difficulty="interval: 500">
 					   
 				 <a-text value="Hard" align="center" position="0 0 0.2" width="4"></a-text>
@@ -530,9 +691,148 @@
 				  
 				</a-box>
 	
-				<a-text value="Click to choose difficulty" position = "-1.2 1.1 -2.6" rotation="-40 0 0"> </a-text>
+				
+				
+				
+				
+				<a-entity position="1.25 0 0">
+				
+					<a-text 
+					  value="Click to choose difficulty"
+					  position="-1.2 1.1 -2.62"
+					  rotation="-40 0 0"
+					  color="#000000"
+					  align="center"
+					  width="4.2"
+					  wrap-count="22"
+					  font = "https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+					  baseline="center"
+					  scale="1.02 1.02 1.02"
+					></a-text>
+
+					<a-text 
+					  value="Click to choose difficulty"
+					  position="-1.2 1.1 -2.6"
+					  rotation="-40 0 0"
+					  color="#12eda6"
+					  align="center"
+					  width="4.2"
+					  wrap-count="22"
+					  font ="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+					  baseline="center"
+					></a-text>
+					
+				</a-entity>
+				
 				
 	</a-entity>
+	
+	
+	----------------------------------------------
+	
+	<!--
+<a-entity animation=
+			"property: 
+				rotation; from: 0 0 0; to:0 360 0; 
+				loop: true; 
+				easing:linear; 
+				dur: 130000">
+	
+	
+	
+		<a-light 
+			type="point" 
+			light="color: #ff5900; groundColor: #ffe229; decay: 1.67; distance: 50; intensity: 50; castShadow: true" 
+			rotation="-12.24 148.46 0" 
+			position="35.63916 6.31984 -29.04544" 
+			scale="2.31 2.35 1.86"> 
+			
+			
+			<a-sphere 
+		material="src: #sun; emissive: orange; emissiveIntensity: 0.8;"  
+		animation=
+			"property: 
+				rotation; from: 0 0 0; to:0 360 0; 
+				loop: true; 
+				easing:linear; 
+				dur: 130000" 
+		opacity="0.9" 
+		scale = "30 30 30" 
+		position="10 30 -110"
+		> 
+				</a-sphere>
+		
+		</a-light>
+			
+			-->
+			
+<a-entity animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; easing: linear; dur: 130000">
+	
+	
+	
+		<a-light 
+			type="point" 
+			light="color: #ff5900; 
+						groundColor: #ffe229; 
+						decay: 1.2; 
+						distance: 100; 
+						intensity: 50; 
+						castShadow: true; 
+						angle: 58.37" 
+			rotation="-12.24 145.89 0" 
+			position="59.99224 19.76453 -71.12302" 
+			scale="2.31 2.35 1.86"> 
+			
+			
+			<a-sphere 
+				material="src: #sun; emissive: orange; emissiveIntensity: 0.8" 
+				animation="property: 
+								rotation; from: 0 0 0; to: 0 360 0; 
+								loop: true; 
+								easing: linear; 
+								dur: 130000" 
+				opacity="0.9" 
+				scale="30 30 30" 
+				position="-3.92275 -0.07383 73.7189" 
+				geometry="" 
+				rotation="0 9.693692307692308 0"> 
+			
+			</a-sphere>
+		
+		</a-light>
+			
+		
+	
+	
+	</a-entity>
+			
+			
+
+	
+
+	
+	<!-- <a-light type="spot" light="color: #ff5900; groundColor: #ffe229; decay: 2.6; distance: 100; intensity: 50; castShadow: true" rotation="180 0 0 " position="-0.71783 -0.5457 1.36986"> </a-light> -->
+	
+
+<a-entity animation = "property: rotation; from: 0 0 0; to: 0 360 0; loop: true; easing: linear; dur: 20000">
+
+		<a-sphere 
+	material="src: #moon"  
+	animation=
+		"property: 
+			rotation; from: 0 0 0; to:0 360 0; 
+			loop: true; 
+			easing:linear; 
+			dur: 80000" 
+	opacity="1" 
+	scale = "7 7 7" 
+	position="-50 12 -10"
+	 shadow="cast: true"> 
+	
+	</a-sphere>
+	
+</a-entity>
+	
 	
 	
 		
@@ -545,6 +845,18 @@
 	<a-entity light="type: directional; intensity: 0.8" position="1 3 2"></a-entity> 
 
 	<a-entity light="type: ambient; intensity: 0.3"></a-entity> 
+	
+	
+	<a-text id="countdownText"
+        value=""
+        position="0 3 -4"
+        color="white"
+        width="10"
+        align="center"
+        visible="false">
+	</a-text>
+	
+	
 	
   </a-scene>
 </body>
